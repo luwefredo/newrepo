@@ -17,3 +17,10 @@ void triangle(const vec4 clip_verts[3], IShader &shader, TGAImage &image, std::v
     vec4 pts[3]  = { Viewport*clip_verts[0],    Viewport*clip_verts[1],    Viewport*clip_verts[2]    };  // triangle screen coordinates before persp. division
     vec2 pts2[3] = { proj<2>(pts[0]/pts[0][3]), proj<2>(pts[1]/pts[1][3]), proj<2>(pts[2]/pts[2][3]) };  // triangle screen coordinates after  perps. division
 //hello
+   virtual void vertex(const int iface, const int nthvert, vec4& gl_Position) {
+        varying_uv.set_col(nthvert, model.uv(iface, nthvert));
+        varying_nrm.set_col(nthvert, proj<3>((ModelView).invert_transpose()*embed<4>(model.normal(iface, nthvert), 0.)));
+        gl_Position= ModelView*embed<4>(model.vert(iface, nthvert));
+        view_tri.set_col(nthvert, proj<3>(gl_Position));
+        gl_Position = Projection*gl_Position;
+    }
